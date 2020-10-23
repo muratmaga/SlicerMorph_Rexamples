@@ -28,18 +28,18 @@ n.lm = length(colnames(coords)) / 3
 # reformat the coords into 3D LM array.
 coords = arrayspecs(coords, p=n.lm, k=3 )
 
-# fit geomorph model directly to coordinates aligned by SlicerMorph's GPA
+# construct a geomorph data frame withe data imported from SlicerMorph and 
+# fit a model to SlicerMorph's GPA aligned coordinates and centroid sizes
 gdf = geomorph.data.frame(size = Csize, coords = coords)
 fit = procD.lm(coords~size, data = gdf)
 summary(fit)
 
-# some visualization in R
-
-rat.plot <- plot(fit, type = "regression", 
+# some examples of visualization in R
+gorilla.plot <- plot(fit, type = "regression", 
                  predictor = gdf$size, reg.type = "RegScore", 
                  pch = 21, bg = "yellow") 
 
-preds <- shape.predictor(fit$GM$fitted, x = rat.plot$RegScore, 
+preds <- shape.predictor(fit$GM$fitted, x = gorilla.plot$RegScore, 
                          predmin = min(rat.plot$RegScore), 
                          predmax = max(rat.plot$RegScore))
 
@@ -47,10 +47,11 @@ plotRefToTarget(M, preds$predmin, mag=2)
 plotRefToTarget(M, preds$predmax, mag=2)
 
 
-# this part uses the raw LM coordinates directly in geomorph, 
-# compares the model fitted to them using geomorph's gpagen function
+# this part imports the raw LM coordinates directly into R/geomorph,
+# aligns them with gpagen() and compares the model fitted to 
 # to the model results above
 
+# modify path variable to the correct location of Gorilla Skull landmarks dataset 
 fcsvs=dir(patt='fcsv', path=paste(path.to.output,'../', sep="/"), full.names = T)
 n=length(fcsvs)
 LMs=array(dim=c(n.lm, 3, n))
@@ -69,7 +70,7 @@ gdf2 = geomorph.data.frame(size = gpa$Csize, coords = gpa$coords)
 fit2 = procD.lm(coords~size, data = gdf2)
 summary(fit2)
 
-# which is identical results -within machine precision- to the previous model
+# which is identical to the results -within machine precision- to the previous model
 summary(fit)
 
 
