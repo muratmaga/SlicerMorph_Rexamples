@@ -7,11 +7,11 @@ source(url("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/ma
 
 library(geomorph)
 
-# we are using the output from the mouse skull LMs data distributed by SlicerMorph
-# using all 55 LMs and with scaling enabled option
+# we are using the output from the gorilla skull LMs data distributed by SlicerMorph
+# 41 LMs and with scaling enabled option
 
 # provide the path to the output folder created by SlicerMorph's gpa module
-path.to.output="C:/temp/RemoteIO/mouse_skull_LMs/2020-09-11_21_34_31/"
+path.to.output="C:/temp/RemoteIO/Gorilla_Skull_LMs/2020-09-19_22_17_05/"
 
 coords = read.csv(file=paste(path.to.output,"OutputData.csv", sep='/'))
 M = as.matrix(read.csv(file=paste(path.to.output,"MeanShape.csv", sep = "/")) [ ,-1])
@@ -34,8 +34,6 @@ fit = procD.lm(coords~size, data = gdf)
 summary(fit)
 
 # some visualization in R
-# note that 4 samples have missing landmarks denoted as c(-1000, -1000, -1000)
-# which would cause weird artifacts in the visualization, but does not impede with what we are testing
 
 rat.plot <- plot(fit, type = "regression", 
                  predictor = gdf$size, reg.type = "RegScore", 
@@ -71,7 +69,7 @@ gdf2 = geomorph.data.frame(size = gpa$Csize, coords = gpa$coords)
 fit2 = procD.lm(coords~size, data = gdf)
 summary(fit2)
 
-# which is identical results to the previous model
+# which is identical results -within machine precision- to the previous model
 summary(fit)
 
 
