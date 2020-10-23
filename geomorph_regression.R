@@ -66,7 +66,7 @@ cor(gpa$Csize, Csize)
 
 # now lets fit the same model from coordinates derived from gpagen 
 gdf2 = geomorph.data.frame(size = gpa$Csize, coords = gpa$coords)
-fit2 = procD.lm(coords~size, data = gdf)
+fit2 = procD.lm(coords~size, data = gdf2)
 summary(fit2)
 
 # which is identical results -within machine precision- to the previous model
