@@ -2,8 +2,8 @@
 # It shows how to reformat the SlicerMorph GPA output to the data shape geomorph expects 
 
 
-source(url("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/main/read.markups.fcsv.R"))
-source(url("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/main/read.markups.json.R"))
+source("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/main/read.markups.fcsv.R")
+source("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/main/read.markups.json.R")
 
 library(geomorph)
 
