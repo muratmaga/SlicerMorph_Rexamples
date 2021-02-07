@@ -82,7 +82,7 @@ plot(geomorph.PD, PD,
      xlab = 'geomorph', main = "Procrustes Distance")
 cor(gpa$Csize, Csize)
 
-# 3. We only plot the first two PCs but correlations reported up to 23
+# 3. We only plot the first two PCs but correlations reported up to 10
 # Keep in mind that PCA signs are arbitrary. 
 
 plot(geomorph.PCs[,1], SlicerMorph.PCs[,1], 
