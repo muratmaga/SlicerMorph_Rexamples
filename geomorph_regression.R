@@ -35,12 +35,10 @@ dimnames(coords) = list(1:n.lm,
 # fit a model to SlicerMorph's GPA aligned coordinates and centroid sizes
 gdf = geomorph.data.frame(size = Csize, coords = coords)
 fit.slicermorph = procD.lm(coords~size, data = gdf)
-summary(fit.slicermorph)
 
 
 # Second part of the script reads the raw LM coordinates directly into R/geomorph,
 # aligns them with gpagen(), applies PCA, and builds the same allometric regression model 
-
 
 # modify path variable to the correct location of Gorilla Skull landmarks datasets.
 # this is typically one level above the output folder
@@ -61,13 +59,41 @@ fit.rawcoords = procD.lm(coords~size, data = gdf2)
 
 
 # due to arbitrary rotations, we cannot compare procrustes coordinates directly, 
-# instead we look centroid sizes, PC scores, and allometric regression model summary
+# instead we look centroid sizes, procD, PC scores, and allometric regression model summary
+# geomorph does not report each sample's procD to the consensus shape
 
+pd = function(M, A) return(sqrt(sum(rowSums((M-A)^2))))
+geomorph.PD = NULL
+for (i in 1:n) geomorph.PD [i] = pd(gpa$consensus, gpa$coords[,,i])
+
+#We can start to compare procrustes variables
+
+par(mfrow=c(2,2))
+
+# 1. Centroid Size
+plot(gpa$Csize, Csize, 
+     pch=20, ylab='SlicerMorph', 
+     xlab = 'geomorph', main = "Centroid Size")
 cor(gpa$Csize, Csize)
 
-# first 5 PCs, note that PCA signs are arbitrary. 
+# 2. Procrustes Distance of sample to their respective mean
+plot(geomorph.PD, PD, 
+     pch=20, ylab='SlicerMorph', 
+     xlab = 'geomorph', main = "Procrustes Distance")
+cor(gpa$Csize, Csize)
 
-for (i in 1:5) print (cor (SlicerMorph.PCs[,i], 
+# 3. We only plot the first two PCs but correlations reported up to 23
+# Keep in mind that PCA signs are arbitrary. 
+
+plot(geomorph.PCs[,1], SlicerMorph.PCs[,1], 
+     pch=20, ylab='SlicerMorph', 
+     xlab = 'geomorph', main = "PC1 scores")
+
+plot(geomorph.PCs[,2], SlicerMorph.PCs[,2], 
+     pch=20, ylab='SlicerMorph', 
+     xlab = 'geomorph', main = "PC2 scores")
+
+for (i in 1:10) print (cor (SlicerMorph.PCs[,i], 
                             geomorph.PCs[,i]))
 
 # Compare allometric regression models from SLicerMorph aligned coordinates
