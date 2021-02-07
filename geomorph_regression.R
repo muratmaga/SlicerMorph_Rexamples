@@ -1,6 +1,5 @@
-# This script uses the procD.lm() examples provided in geomorph 3.3.1.
-# It shows how to reformat the SlicerMorph GPA output to the data shape geomorph expects 
-
+# This script is based on geomorph 3.3.2.
+# First part shows how to reformat the SlicerMorph GPA output to the data shape geomorph expects 
 
 source("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/main/read.markups.fcsv.R")
 source("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/main/read.markups.json.R")
@@ -14,63 +13,69 @@ library(geomorph)
 path.to.output="C:/temp/RemoteIO/Gorilla_Skull_LMs/2020-09-19_22_17_05/"
 
 coords = read.csv(file=paste(path.to.output,"OutputData.csv", sep='/'))
-M = as.matrix(read.csv(file=paste(path.to.output,"MeanShape.csv", sep = "/")) [ ,-1])
+SlicerMorph.PCs = read.table(file=paste(path.to.output,"pcScores.csv", sep='/'), sep = ",", header=T, row.names = 1)
 
-# pull the metadata out of coords data frame.
+# pull the metadata out of coords data frame and clean it
 sample.name = coords[,1]
 Csize= coords[,3]
 PD = coords [,2]
 coords = coords [,-c(1:3)]
+rownames(coords) = sample.name
 
 # identify number of landmarks
 n.lm = length(colnames(coords)) / 3
 
-# reformat the coords into 3D LM array.
+# reformat the coords into 3D LM array and apply sample names
 coords = arrayspecs(coords, p=n.lm, k=3 )
+dimnames(coords) = list(1:n.lm, 
+                          c("x","y","z"),
+                          sample.name)
 
 # construct a geomorph data frame withe data imported from SlicerMorph and 
 # fit a model to SlicerMorph's GPA aligned coordinates and centroid sizes
 gdf = geomorph.data.frame(size = Csize, coords = coords)
-fit = procD.lm(coords~size, data = gdf)
-summary(fit)
-
-# some examples of visualization in R
-gorilla.plot <- plot(fit, type = "regression", 
-                 predictor = gdf$size, reg.type = "RegScore", 
-                 pch = 21, bg = "yellow") 
-
-preds <- shape.predictor(fit$GM$fitted, x = gorilla.plot$RegScore, 
-                         predmin = min(rat.plot$RegScore), 
-                         predmax = max(rat.plot$RegScore))
-
-plotRefToTarget(M, preds$predmin, mag=2)
-plotRefToTarget(M, preds$predmax, mag=2)
+fit.slicermorph = procD.lm(coords~size, data = gdf)
+summary(fit.slicermorph)
 
 
-# this part imports the raw LM coordinates directly into R/geomorph,
-# aligns them with gpagen() and compares the model fitted to 
-# to the model results above
+# Second part of the script reads the raw LM coordinates directly into R/geomorph,
+# aligns them with gpagen(), applies PCA, and builds the same allometric regression model 
 
-# modify path variable to the correct location of Gorilla Skull landmarks dataset 
-fcsvs=dir(patt='fcsv', path=paste(path.to.output,'../', sep="/"), full.names = T)
+
+# modify path variable to the correct location of Gorilla Skull landmarks datasets.
+# this is typically one level above the output folder
+fcsvs=paste0(path=paste(path.to.output,'../', sep="/"), sample.name, '.fcsv')
+if (!all(file.exists(fcsvs))) print ("missing files, check path")
+
 n=length(fcsvs)
 LMs=array(dim=c(n.lm, 3, n))
 
 for (i in 1:n) LMs[,,i] = read.markups.fcsv(fcsvs[i])
 
-gpa <- gpagen(LMs)
 
-# We cannot compare things like procrustes aligned coordinates or mean shape directly due to arbitrary rotations
-# let's look at correlation on centroid sizes
+gpa <- gpagen(LMs)
+pca  = gm.prcomp(gpa$coords)
+geomorph.PCs = pca$x
+gdf2 = geomorph.data.frame(size = gpa$Csize, coords = gpa$coords)
+fit.rawcoords = procD.lm(coords~size, data = gdf2)
+
+
+# due to arbitrary rotations, we cannot compare procrustes coordinates directly, 
+# instead we look centroid sizes, PC scores, and allometric regression model summary
 
 cor(gpa$Csize, Csize)
 
-# now lets fit the same model from coordinates derived from gpagen 
-gdf2 = geomorph.data.frame(size = gpa$Csize, coords = gpa$coords)
-fit2 = procD.lm(coords~size, data = gdf2)
-summary(fit2)
+# first 5 PCs, note that PCA signs are arbitrary. 
 
-# which is identical to the results -within machine precision- to the previous model
-summary(fit)
+for (i in 1:5) print (cor (SlicerMorph.PCs[,i], 
+                            geomorph.PCs[,i]))
+
+# Compare allometric regression models from SLicerMorph aligned coordinates
+# to the one that used raw coordinates and gpa alignment from geomorph
+summary(fit.slicermorph)
+
+summary(fit.rawcoords)
+
+
 
 
