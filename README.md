@@ -22,8 +22,11 @@ Some functions to import SlicerMorph data into R
   * $LM = 3D landmark array that contains the 3D raw coordinates as inputed to the SlicerMorph GPA module. 
   
 
+Example for usage:
 
-```slicermorph.log
+```
+slicermorph.log = parser("C:/temp/RemoteIO/Gorilla_Skull_LMs/2021-02-14_20_31_08/analysis.log")
+slicermorph.log
 $input.path
 [1] "C:/temp/RemoteIO/Gorilla_Skull_LMs"
 
