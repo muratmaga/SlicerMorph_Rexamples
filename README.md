@@ -4,6 +4,7 @@ Some functions to import SlicerMorph data into R
 * **read.markups.fcsv.R:** utility function to read a FCSV formatted markups file into R as a matrix. 
 * **read.markups.json.R:** utility function to read a JSON formatted markups file into R as a matrix.
 * **geomorph_regression.R:** an example of how to conduct allometric regression with SlicerMorph data. It also compares results SlicerMorph GPA results to the one derived from R/geomorph using the raw LM coordinates.  
+* **bilat_symmetry.R:** a simple R script that demonstrate how to symmetry analysis in R/geomorph using SlicerMorph output. It uses the log_parser.R function below to obtain necessary fields.
 * **log_parser.R:** Since ?/?/? SlicerMorph's GPA module outputs a log file that contains summary of settings used in the GPA analysis, including input/output folders, filenames, formats, number of landmarks, excluded (if any) landmarks, centroid size scaling, and the output files. This Rscript parses this log file and returns a named list with: 
   * $input.path = Unix style path to input folder with landmark files.
   * $output.path = Unix stype path to the output folder created by GPA
