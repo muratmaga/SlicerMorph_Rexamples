@@ -10,11 +10,11 @@ parser = function(file=NULL){
   log$files = unlist(strsplit(temp[5],','))
   log$format = temp[6]
   log$no.LM = as.numeric(temp[7])
-  if (temp[8]=="") log$skipped=FALSE else {
+  if (is.na(temp[8])) log$skipped=FALSE else {
     log$skipped=TRUE
     log$skipped.LM=unlist(strsplit(temp[8],","))
   }
-  
+   
   if (as.logical(temp[9])) log$scale=TRUE else log$scale=FALSE
   log$MeanShape=temp[10]
   log$eigenvalues=temp[11]
