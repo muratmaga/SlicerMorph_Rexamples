@@ -7,11 +7,15 @@ library(geomorph)
 
 source("https://raw.githubusercontent.com/muratmaga/SlicerMorph_Rexamples/main/log_parser.R")
 
+
 # point to the location of the analysis.log file that was saved by SlicerMorph's GPA module
+# either via coding the path
+# SM.log.file="C:/Users/amaga/Desktop/2021-02-23_09_51_23/analysis.log"
 
-SM.log.file="C:/Users/amaga/Desktop/2021-02-23_09_51_23/analysis.log"
-
+# or interactively 
+SM.log.file = file.choose()
 SM.log = parser(SM.log.file)
+
 
 #SM.log file contains pointers to all relevant data files.
 head(SM.log)
