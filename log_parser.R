@@ -28,17 +28,15 @@ parser = function(file=NULL){
                    dimnames = list(1:log$no.LM, c("x", "y", "z"), log$ID))
     if (log$format!="json") 
       for (i in 1:length(log$files)) log$LM[,,i] = read.markups.fcsv(paste(log$input.path,log$files[i],sep = "/")) else 
-        log$LM[,,i] = read.markups.json(paste(log$input.path,log$files[i],sep = "/"))
+        for (i in 1:length(log$files))  log$LM[,,i] = read.markups.json(paste(log$input.path,log$files[i],sep = "/"))
   } else {
     log$LM = array(dim = c(log$no.LM - length(log$skipped.LM), 3, length(log$files)), 
                    dimnames = list((1:log$no.LM)[-as.numeric(log$skipped.LM)], c("x", "y", "z"), log$ID))
-    
     if (log$format!="json") 
       for (i in 1:length(log$files)) log$LM[,,i] = read.markups.fcsv(paste(log$input.path,log$files[i],sep = "/"))[-c(as.numeric(log$skipped.LM) ), ] else 
         for (i in 1:length(log$files)) log$LM[,,i] = read.markups.json(paste(log$input.path,log$files[i],sep = "/"))[-c(as.numeric(log$skipped.LM) ), ]  
-    
+        
   }
-  
   
   return(log)
   
