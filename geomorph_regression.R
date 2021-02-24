@@ -31,13 +31,18 @@ SlicerMorph.PCs = read.table(file=paste(SM.log$output.path,
 
 # pull the metadata out of coords data frame and clean it
 #PD = SM.output [,2]
+# check the number of landmarks used in the analysis
+
+if (!SM.log$skipped) no.LM=SM.log$no.LM else no.LM = SM.log$no.LM - length(SM.log$skipped.LM)
 
 # reformat the coords into 3D LM array and apply sample names
+
+
 Coords = arrayspecs(SM.output[,-c(1:3)], 
-                    p=SM.log$no.LM, 
+                    p=no.LM, 
                     k=3 )
 
-dimnames(Coords) = list(1:SM.log$no.LM, 
+dimnames(Coords) = list(1:no.LM, 
                         c("x","y","z"),
                         SM.log$ID)
 
