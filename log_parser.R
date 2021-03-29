@@ -14,7 +14,32 @@ parser = function(file=NULL){
     log$skipped=TRUE
     log$skipped.LM=unlist(strsplit(temp[8],","))
   }
-   
+  
+  #reading one sample fcsv file to see if there are any LMs tagged as semiLMs.
+  log$semi=FALSE 
+  
+  if (log$format=="json") { 
+    if (!require(jsonlite)) {
+    print("installing jsonlite")
+    install.packages('jsonlite')
+    library(jsonlite)
+  }
+    semi.check = (fromJSON(paste(log$input.path,log$files[1], sep='/'), flatten=T))$markups$controlPoints[[1]]$description
+    if ( (!all(semi.check=="")) | (!all(semi.check=="Fixed"))) { 
+      log$semi=TRUE
+      log$semi.range = which(semi.check=='Semi')
+      log$fixed.range = which(semi.check!='Semi')
+    }
+  } else {
+      semi.check=read.csv(file=paste(log$input.path,log$files[1], sep='/'), skip=2, header=T)$desc
+      if ( (!all(semi.check=="")) | (!all(semi.check=="Fixed"))) { 
+        log$semi=TRUE
+        log$semi.range = which(semi.check=='Semi')
+        log$fixed.range = which(semi.check!='Semi')
+      }
+  }
+  
+  
   if (as.logical(temp[9])) log$scale=TRUE else log$scale=FALSE
   log$MeanShape=temp[10]
   log$eigenvalues=temp[11]
