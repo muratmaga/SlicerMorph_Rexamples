@@ -12,7 +12,7 @@ Some functions to import SlicerMorph data into R
   * $format = format of landmark files ("fcsv" or "mrk.json")
   * $no.LM = number of landmarks original
   * $skipped = If any landmark is omitted in GPA (TRUE/FALSE) 
-  * $skippedLM = Indices of skipped LMs (created only if $skipped=TRUE)
+  * $skippedLM = Indices of skipped LMs (created only if $skipped==TRUE)
   * $scale = are data scaled by centroid sizes (TRUE/FALSE)
   * $MeanShape = filename that contains mean shape coordinates calculated by GPA (csv format)
   * $eigenvalues = filename that contains eigenvalues as calculated by PCA in the SlicerMorph GPA (csv format)
@@ -21,6 +21,8 @@ Some functions to import SlicerMorph data into R
   * $pcScores = filename that contains individal PC scores of specimens as calculated by PCA in the SlicerMorph GPA (csv format)
   * $ID = list of specimen identifiers
   * $LM = 3D landmark array that contains the 3D raw coordinates as inputed to the SlicerMorph GPA module. 
+  * $semi = If any landmarks are tagged as semi-landmarks (TRUE/FALSE)
+  * $semiLM = indices of LMs tagged as semi-landmarks (created only if $semi==TRUE)
   
 
 Example for usage:
