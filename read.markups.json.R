@@ -1,4 +1,4 @@
-function(file=NULL){
+read.markups.json = function(file=NULL){
   if (!require(jsonlite)) {
     print("installing jsonlite")
     install.packages('jsonlite')
